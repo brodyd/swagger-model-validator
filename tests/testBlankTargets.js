@@ -4,6 +4,7 @@
 var Validator = require('../lib/modelValidator');
 var validator = new Validator();
 
+//noinspection JSUnusedGlobalSymbols
 module.exports.validatorTests = {
     disallowBlankTargets: function (test) {
         var data = {};
@@ -22,7 +23,7 @@ module.exports.validatorTests = {
 
         test.expect(2);
         test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Unable to validate an empty value.", errors.errors[0].message);
+        test.ok(errors.errors[0].message === "Unable to validate an empty value for property: rootModel", errors.errors[0].message);
 
         test.done();
     },
@@ -77,7 +78,7 @@ module.exports.validatorTests = {
 
         test.expect(2);
         test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Unable to validate an empty value.", errors.errors[0].message);
+        test.ok(errors.errors[0].message === "Unable to validate an empty value for property: names", errors.errors[0].message);
 
         test.done();
     },
@@ -207,7 +208,7 @@ module.exports.validatorTests = {
 
         test.expect(2);
         test.ok(!errors.valid);
-        test.ok(errors.errors[0].message === "Unable to validate an empty value.", errors.errors[0].message);
+        test.ok(errors.errors[0].message === "Unable to validate an empty value for property: names", errors.errors[0].message);
 
         test.done();
     }

@@ -1,38 +1,42 @@
-# Validate incoming objects against Swagger Models for Node.js
+# Validate incoming objects against OpenAPI Models for Node.js
 [ ![Codeship Status for atlantishealthcare/swagger-model-validator](https://codeship.com/projects/a4ec3310-3b9b-0132-060c-1e7e00028aa9/status?branch=master)](https://codeship.com/projects/42728) 
 [ ![npm version](https://badge.fury.io/js/swagger-model-validator.svg)](https://badge.fury.io/js/swagger-model-validator)
 [![Build Status](https://travis-ci.org/atlantishealthcare/swagger-model-validator.svg?branch=master)](https://travis-ci.org/atlantishealthcare/swagger-model-validator)
 
 [![NPM](https://nodei.co/npm/swagger-model-validator.png?downloads=true)](https://nodei.co/npm-dl/swagger-model-validator/)
 
-This is a validation module for [Swagger](https://github.com/swagger-api/swagger-spec) models (version 1.2 and 2.0) for Node.js.
+This is a validation module for [Swagger](https://github.com/swagger-api/swagger-spec) models (version 1.2 and 2.0) and for [Open API](https://swagger.io/specification/) models (version 3.0) for Node.js.
+
+The latest version is backwards compatible with all previous releases and supports all versions of Swagger (1.2 and 2.0) and Open API (3.0).  We will try and keep it backward compatible in the future as well.  
+We will increment the Major and Minor versions to match the maximum version of the Open API supported (currently 3.0).
 
 See the [swagger-node-express](https://github.com/swagger-api/swagger-node-express) sample for more details about Swagger in Node.js.
 
-This is tested against the latest stable versions of Node 0.10, 0.12, 4, 5, 6 and 7 using [Travis](https://travis-ci.org/atlantishealthcare/swagger-model-validator).
+This is tested against the NodeJS 0.10, 0.12 and the latest stable versions of IOJS and NodeJS 4, 5, 6, 7, 8, 9 and 10 using [Travis](https://travis-ci.org/atlantishealthcare/swagger-model-validator).
 
-## What's Swagger?
-The goal of Swagger™ (now OpenApi) is to define a standard, language-agnostic interface to REST APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection. When properly defined via Swagger, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, Swagger removes the guesswork in calling the service.
+## What's Open API?
+The goal of OpenAPI™ (formerly Swagger) is to define a standard, language-agnostic interface to REST APIs which allows both humans and computers to discover and understand the capabilities of the service without access to source code, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
 
-Check out [Swagger-Spec](https://github.com/swagger-api/swagger-spec) for additional information about the Swagger project, including additional libraries with support for other languages and more. 
+Check out [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) for additional information about the OpenAPI project, including additional libraries with support for other languages and more. 
 
-## Validating Swagger Models?
-A Swagger Model contains the definitions of the incoming (or outgoing) object properties.  Validating an incoming object matches the Swagger Model Definition is a valuable check that the correct data has been provided.
+## Validating OpenAPI Models?
+An OpenAPI Model contains the definitions of the incoming (or outgoing) object properties.  Validating an incoming object matches the OpenAPI Model Definition is a valuable check that the correct data has been provided.
 
 This package provides a module to do just that.
 
-## Swagger versions
-This project should work against both Swagger 1.2 and Swagger 2.0.  Please create a pull request if you have any fixes for Swagger 2.0 support but please remember to retain support for Swagger 1.2 as well.
+## Swagger and OpenAPI Versions
+This project should work against both Swagger 1.2, Swagger 2.0 and parts of OpenApi 3.0.  Please create a pull request if you have any fixes for Swagger 2.0 or OpenAPI 3.0 support but please remember to retain support for Swagger 1.2 as well.
 
-### Swagger 1.1
-This project was created against Swagger 1.1.
-### Swagger 2.0
-We have some changes to support Swagger 2.0 but not of Swagger 2.0 is supported.
-
+### Swagger 1.2
+This package was original developed against the Swagger 1.2 specification.
+### Swagger 2.0 / OpenAPI 2.0
+This package has had some activity to align it with the 2.0 specification but it has not been completely done.  We've handled it on an 'as required' basis.  We welcome any pull requests for 2.0 support.
 Version 2.2.0 has changes that implement the `exclusiveMinimum` and `exclusiveMaximum` validations as per the Swagger 2.0 specification which is different from 1.1 and 3.0 due to changes in the underlying JSON Schema definitions.
 `exclusiveMinimum` and `exclusiveMaximum` can be booleans (Swagger 2.0) which modify the behaviour of the `minimum` and 'maximum' validations; or they can be integers (Swagger 1.1 and OpenAPI 3.0) which set specific exclusive minimums and maximums.
 ### OpenAPI 3.0
-We have no specific support of OpenApi 3.0 yet.
+This package has had some activity to align it with the Open API 3.0 specification but it has not been completely done. We welcome any pull requires with 3.0 support but would like to request that you retain support for 1.2 and 2.0 if possible.
+
+RegEx Pattern support was added (Thanks @julianpellasrice)
 
 ## Validation Notes
 It will validate int32 properly but the way javascript handles int64 makes it impossible to accurately validate int64s.
@@ -129,8 +133,23 @@ var validation = swagger.validateModel("modelName", target, true, true);
 From 2.1.4 you can add a custom specification to allow a required object to be null.
 This is different from not being present in the body of the request or response.
 
-Simple add the property ```'x-nullable': true``` to your definition of a required property to allow the value of null to pass validation.
+Simply add the property ```'x-nullable': true``` to your definition of a required property to allow the value of null to pass validation.
 This has no effect on any property that is not required.
+
+## Added Support for nullable required properties
+From 3.0.5 you can use the nullable property to allow a required object to be null.
+This works exactly the same was as x-nullable.
+
+```
+'nullable': true
+```
+
+This change has also added the support for using this (and x-nullable) with a false value.  Previously this would have been the same as true.
+
+## Skip validation of a single field
+From 3.0.1 you can add a custom specification to prevent a field being validated.
+
+Simply add the property ```'x-do-not-validate': true``` to your  definition of a property to prevent the property being validated.
 
 ## Custom Field Validators
 You can add a custom field validator for a model to the validator from version 1.0.3 onwards.  This allows you to add a
@@ -172,7 +191,7 @@ Now the validator will call this extra function for the 'id' field in the 'testM
 You can add multiple custom validators to the same field.  They will all be run.  If a validator throws an exception it
 will be ignored and validation will continue.
 
-### Custom Field Validators for Swagger 2.0 Onwards
+### Custom Field Validators for OpenAPI 2.0 Onwards
 Because the id property has been dropped from the model it is much harder to link models together in the validator.
 
 You can now add field validators as a custom property on each model by using the addFieldValidatorToModel function.
